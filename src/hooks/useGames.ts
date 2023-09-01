@@ -1,12 +1,6 @@
-import { useState, useEffect } from "react";
-import apiClient from "../services/apiClient";
-import { AxiosError } from "axios";
-
-export interface Platform {
-  id: number;
-  name: string;
-  slug: string;
-}
+import useData from "./useData";
+import { Genre } from "./useGenres";
+import { Platform } from "./usePlatforms";
 
 export interface Game {
   id: number;
@@ -15,33 +9,15 @@ export interface Game {
   parent_platforms: { platform: Platform }[];
   metacritic: number;
 }
-interface FetchGameResponse {
-  count: number;
-  results: Game[];
-}
-const useGames = () => {
-  const [games, setGames] = useState<Game[]>([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    setLoading(true);
-    apiClient
-      .get<FetchGameResponse>("/games", { signal: controller.signal })
-      .then((res) => {
-        setGames(res.data.results);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err instanceof AxiosError) return;
-        setError(err.message);
-        setLoading(false);
-      });
-    return () => {
-      controller.abort();
-    };
-  }, []);
-  return { games, error, loading };
-};
+const useGames = (
+  selectedGenre: Genre | null,
+  selectedPlaform: Platform | null
+) =>
+  useData<Game>(
+    "/games",
+    { params: { genres: selectedGenre?.id, platforms: selectedPlaform?.id } },
+    [selectedGenre?.id, selectedPlaform?.id]
+  );
+
 export default useGames;
