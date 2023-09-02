@@ -10,7 +10,7 @@ import {
 import { MdPhoneIphone } from "react-icons/md";
 import { BsGlobe } from "react-icons/bs";
 import { SiNintendo } from "react-icons/si";
-import { Platform } from "../hooks/useGames";
+import { Platform } from "../hooks/usePlatforms";
 import { IconType } from "react-icons/lib/esm/iconBase";
 
 interface Props {
